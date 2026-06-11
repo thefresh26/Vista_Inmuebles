@@ -1,0 +1,45 @@
+# ============================================================
+# INMUEBLES-BROKERS — Dependencias del Proyecto
+# Consulta de Inventario de Inmuebles · Activos por Colombia
+# ============================================================
+
+# ------------------------------------------------------------
+# ENTORNO VIRTUAL (Node Version Manager)
+# Activar con: nvm use
+# ------------------------------------------------------------
+node@18.20.4                # Versión LTS fijada en .nvmrc
+
+# ------------------------------------------------------------
+# ENTORNO DE DESARROLLO (Node.js)
+# Instalar con: npm install
+# ------------------------------------------------------------
+live-server@^1.2.2          # Servidor local con hot-reload para desarrollo
+http-server@^14.1.1         # Servidor estático alternativo (producción local)
+
+# ------------------------------------------------------------
+# DEPENDENCIAS FRONTEND (cargadas vía CDN — no requieren npm)
+# ------------------------------------------------------------
+jszip@3.10.1                # Compresión ZIP/KMZ en el cliente
+                            # CDN: https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js
+
+# ------------------------------------------------------------
+# FUENTES WEB (Google Fonts — no requieren instalación)
+# ------------------------------------------------------------
+# Montserrat (weights: 400, 500, 600, 700, 800)
+# Open Sans  (weights: 400, 500, 600)
+# URL: https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;500;600
+
+# ------------------------------------------------------------
+# BACKEND / SERVICIOS EXTERNOS
+# ------------------------------------------------------------
+# Supabase REST API (anon key, sin SDK)
+# Proyecto: niemyawlnebylpidfefh.supabase.co
+# Tablas: inventario_SAE, inventario_Activos
+# Autenticación: apikey header + Bearer token (anon key)
+
+# ------------------------------------------------------------
+# VERSIONES DE ENTORNO RECOMENDADAS
+# ------------------------------------------------------------
+# Node.js  18.20.4 (ver .nvmrc)
+# npm      >= 9.x
+# Navegador: Chrome 110+, Firefox 110+, Edge 110+

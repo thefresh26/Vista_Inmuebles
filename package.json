@@ -1,0 +1,22 @@
+{
+  "name": "inmuebles-brokers",
+  "version": "1.0.0",
+  "description": "SPA de consulta de inventario de inmuebles — Activos por Colombia",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx live-server --port=5500 --open=index.html",
+    "start": "npx http-server . -p 5500 -o"
+  },
+  "keywords": [
+    "inmuebles",
+    "supabase",
+    "spa",
+    "activos-colombia"
+  ],
+  "author": "Activos por Colombia",
+  "license": "PRIVATE",
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "live-server": "^1.2.2"
+  }
+}

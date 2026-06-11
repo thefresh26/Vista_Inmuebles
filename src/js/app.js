@@ -78,10 +78,11 @@ function semaforo(r){
   if(pct>=70){fillColor='linear-gradient(90deg,#1ab87a,#2ed18e)';textColor='#138f5e';}
   else if(pct>=40){fillColor='linear-gradient(90deg,#f07b00,#f5a800)';textColor='#b85c00';}
   else{fillColor='linear-gradient(90deg,#c02020,#e03535)';textColor='#c02020';}
+  const enExtinto = String(r.estado_legal||'').toUpperCase().includes('EXTINTO');
   const items=[
     {label:'Catastral',peso:'10%',val:r.bk_catastral_10},
     {label:'Avalúo Comercial',peso:'40%',val:r.bl_avaluo_40},
-    {label:'Enajenación',peso:'20%',val:r.bm_enajenacion_20},
+    {label:'Enajenación',peso:'20%',val: enExtinto ? 'OK' : r.bm_enajenacion_20},
     {label:'Viabilidad Jca.',peso:'30%',val:r.bn_viabilidad_30},
   ];
   return`
@@ -180,7 +181,13 @@ async function buscar(){
         <div class="f"><label>Disponibilidad</label><div class="v">${chip(r.disponibilidad,'disp')}</div></div>
         <div class="f"><label>Estado de Ocupación</label><div class="v">${chip(r.estado_ocupacion,'ocup')}</div></div>
         <div class="f"><label>Estado Físico</label><div class="v">${chip(r.estado_fisico,'fis')}</div></div>
-        <div class="f"><label>Estado Legal</label><div class="v">${String(r.bm_enajenacion_20||'').toUpperCase()==='OK'?'<span class="chip cg">✓ Enajenación Temprana</span>':'<span class="chip cr">✕ Extinto 100</span>'}</div></div>
+        <div class="f"><label>Estado Legal</label><div class="v">${(()=>{
+  const legal = String(r.estado_legal||'').toUpperCase();
+  const enajenacion = String(r.bm_enajenacion_20||'').toUpperCase();
+  if(enajenacion === 'OK') return '<span class="chip cg">✓ Enajenación Temprana</span>';
+  if(legal.includes('EXTINTO')) return '<span class="chip cg">✓ Extinto 100</span>';
+  return '<span class="chip cr">✕ Extinto 100</span>';
+})()}</div></div>
         <div class="f"><label>Estado Viabilidad</label><div class="v">${vExists?'<span class="chip cg">✓ Sí</span>':'<span class="chip cr">✕ No</span>'}</div></div>
       </div>
     </div>

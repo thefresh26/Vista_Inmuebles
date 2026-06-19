@@ -238,7 +238,6 @@ async function buscar(){
         <div class="f"><label>Avalúo Catastral</label><div class="v vm">${fmtM(r.avaluo_catastral)}</div></div>
         ${currentRole==='comercial'?`<div class="f"><label>Avalúo Comercial</label><div class="v vm">${fmtM(r.avaluo_comercial)}</div></div>`:''}
         <div class="f"><label>Fecha de Avalúo</label><div class="v vm">${fmt(r.fecha_avaluo)}</div></div>
-        <div class="f"><label>Vencimiento Avalúo</label><div class="v vm">${fmt(r.fecha_vencimiento_avaluo)}</div></div>
         <div class="f"><label>Área Construida</label><div class="v vm">${fmtA(r.area_construida)}</div></div>
         <div class="f"><label>Área Terreno</label><div class="v vm">${fmtA(r.area_terreno)}</div></div>
       </div>
@@ -248,11 +247,6 @@ async function buscar(){
       <div class="g2">
         <div class="f"><label>Causal</label><div class="v">${fmt(r.causal)}</div></div>
         <div class="f"><label>Enajenación</label><div class="v">${fmt(r.enajenacion)}</div></div>
-        <div class="f"><label>OK Vigencia Catastral</label><div class="v">${chip(r.ok_vigencia_catastral,'ok')}</div></div>
-        <div class="f"><label>OK Causal Enajenación</label><div class="v">${chip(r.ok_causal_enajenacion,'ok')}</div></div>
-        <div class="f"><label>Más de 5 Enajenaciones</label><div class="v vm">${fmt(r.mas_5_enajenacion)}</div></div>
-        <div class="f"><label>OK Vencimiento Avalúo</label><div class="v">${chip(r.ok_vencimiento_avaluo,'ok')}</div></div>
-        <div class="f"><label>Meses Viable Jurídico</label><div class="v vm">${fmtMeses(r.meses_viable_juridico)}</div></div>
         <div class="f"><label>Proceso Actual</label><div class="v" style="font-size:11px">${fmt(r.proceso)}</div></div>
       </div>
     </div>

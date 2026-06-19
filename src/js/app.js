@@ -78,7 +78,7 @@ function evaluarEstadoLegal(r) {
 
   const esExtinto = legal.startsWith('EXTINTO');
   const esEnProceso = legal.startsWith('EN PROCESO');
-  const esImprocedente = legal.startsWith('IMPROCEDENTE');
+  const esImprocedente = legal.includes('IMPROCEDENTE');
 
   let chipClase, chipTexto;
   if (esExtinto || esEnProceso) {

@@ -72,18 +72,55 @@ function chip(v,tipo){
   return`<span class="chip cgr">${v}</span>`;
 }
 
+function evaluarEstadoLegal(r) {
+  const legal = String(r.estado_legal || '').toUpperCase().trim();
+  const enajenacionOK = String(r.bm_enajenacion_20 || '').toUpperCase() === 'OK';
+
+  const esExtinto = legal.startsWith('EXTINTO');
+  const esEnProceso = legal.startsWith('EN PROCESO');
+  const esImprocedente = legal.startsWith('IMPROCEDENTE');
+
+  let chipClase, chipTexto;
+  if (esExtinto || esEnProceso) {
+    chipClase = 'chip cg';
+    chipTexto = '✓ ' + (r.estado_legal || '');
+  } else if (esImprocedente) {
+    chipClase = 'chip cr';
+    chipTexto = '✕ ' + (r.estado_legal || '');
+  } else {
+    chipClase = 'chip cr';
+    chipTexto = r.estado_legal ? '✕ ' + r.estado_legal : '—';
+  }
+
+  let enajenacionForzada;
+  if (esExtinto) {
+    enajenacionForzada = 'OK';
+  } else if (esEnProceso) {
+    enajenacionForzada = r.bm_enajenacion_20;
+  } else {
+    enajenacionForzada = 'NO';
+  }
+
+  const debeSupmar = (esExtinto && !enajenacionOK);
+  const avanceBase = parseFloat(r.avance || 0);
+  const avanceAjustado = debeSupmar ? Math.min(avanceBase + 0.20, 1.0) : avanceBase;
+
+  return { chipClase, chipTexto, enajenacionForzada, avanceAjustado };
+}
+
 function semaforo(r){
-  const pct=Math.round((r.avance||0)*100);
-  let fillColor,textColor;
+  const ev = evaluarEstadoLegal(r);
+  const pct = Math.round(ev.avanceAjustado * 100);
+
+  let fillColor, textColor;
   if(pct>=70){fillColor='linear-gradient(90deg,#1ab87a,#2ed18e)';textColor='#138f5e';}
   else if(pct>=40){fillColor='linear-gradient(90deg,#f07b00,#f5a800)';textColor='#b85c00';}
   else{fillColor='linear-gradient(90deg,#c02020,#e03535)';textColor='#c02020';}
-  const enExtinto = String(r.estado_legal||'').toUpperCase().includes('EXTINTO') ||
-                   String(r.estado_legal||'').toUpperCase().includes('EN PROCESO 100');
+
   const items=[
     {label:'Catastral',peso:'10%',val:r.bk_catastral_10},
     {label:'Avalúo Comercial',peso:'40%',val:r.bl_avaluo_40},
-    {label:'Enajenación',peso:'20%',val: enExtinto ? 'OK' : r.bm_enajenacion_20},
+    {label:'Enajenación',peso:'20%',val:ev.enajenacionForzada},
     {label:'Viabilidad Jca.',peso:'30%',val:r.bn_viabilidad_30},
   ];
   return`
@@ -183,11 +220,8 @@ async function buscar(){
         <div class="f"><label>Estado de Ocupación</label><div class="v">${chip(r.estado_ocupacion,'ocup')}</div></div>
         <div class="f"><label>Estado Físico</label><div class="v">${chip(r.estado_fisico,'fis')}</div></div>
         <div class="f"><label>Estado Legal</label><div class="v">${(()=>{
-  const legal = String(r.estado_legal||'').toUpperCase();
-  const esExtinto = legal.includes('EXTINTO') || legal.includes('EN PROCESO 100');
-  if(esExtinto) return '<span class="chip cg">✓ Extinto 100</span>';
-  if(String(r.bm_enajenacion_20||'').toUpperCase() === 'OK') return '<span class="chip cg">✓ Enajenación Temprana</span>';
-  return '<span class="chip cr">✕ Extinto 100</span>';
+  const ev = evaluarEstadoLegal(r);
+  return r.estado_legal ? `<span class="${ev.chipClase}">${ev.chipTexto}</span>` : '—';
 })()}</div></div>
         <div class="f"><label>Estado Viabilidad</label><div class="v">${vExists?'<span class="chip cg">✓ Sí</span>':'<span class="chip cr">✕ No</span>'}</div></div>
       </div>

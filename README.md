@@ -38,7 +38,7 @@ INMUEBLES-BROKERS/
 │   └── logos/              → Assets de imagen y SVG
 ├── .nvmrc                  → Versión de Node fijada (entorno virtual)
 ├── package.json            → Configuración npm y scripts
-├── requirements.txt        → Documentación completa de dependencias
+├── DEPENDENCIAS.txt        → Documentación completa de dependencias
 ├── .gitignore
 └── README.md
 ```

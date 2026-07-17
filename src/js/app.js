@@ -182,33 +182,7 @@ async function buscar(){
     res.style.display='block';
 
     const mapLink=r.georeferenciado
-      ?(()=>{
-        // Extraer coordenadas de la URL de Google Maps (@lat,lng,zoom)
-        const match = r.georeferenciado.match(/@(-?\d+\.?\d*),(-?\d+\.?\d*)/);
-        if(!match) return '<span class="null">Sin georreferenciación</span>';
-        const lat = match[1];
-        const lng = match[2];
-        const nombre = (r.fmi||'Inmueble').replace(/[<>&"]/g,'');
-        const direccion = (r.direccion||'').replace(/[<>&"]/g,'');
-        const municipio = (r.municipio||'').replace(/[<>&"]/g,'');
-
-        // Generar KML con el punto del inmueble
-        const kml = `<?xml version="1.0" encoding="UTF-8"?>
-<kml xmlns="http://www.opengis.net/kml/2.2">
-  <Placemark>
-    <name>${nombre}</name>
-    <description>${direccion} - ${municipio}</description>
-    <Point>
-      <coordinates>${lng},${lat},0</coordinates>
-    </Point>
-  </Placemark>
-</kml>`;
-
-        const blob = new Blob([kml], {type:'application/vnd.google-earth.kml+xml'});
-        const url = URL.createObjectURL(blob);
-
-        return `<a class="map-link" href="${url}" download="${nombre}.kml">${icon('<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>')} Ver en Google Earth</a>`;
-      })()
+      ?`<a class="map-link" href="${r.georeferenciado}" target="_blank">${icon('<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>')} Ver ubicación en mapa</a>`
       :'<span class="null">Sin georreferenciación</span>';
 
     const dispBadge=String(r.disponibilidad||'').toUpperCase()==='DISPONIBLE'

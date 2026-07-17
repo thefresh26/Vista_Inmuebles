@@ -39,7 +39,6 @@ function nul(v){return v===null||v===undefined||v==='';}
 function fmt(v){if(nul(v))return '<span class="null">—</span>';return String(v);}
 function fmtM(v){if(nul(v))return '<span class="null">—</span>';const x=parseFloat(v);if(isNaN(x)||x===0)return '<span class="null">—</span>';return '$ '+x.toLocaleString('es-CO',{maximumFractionDigits:0});}
 function fmtA(v){if(nul(v))return '<span class="null">—</span>';const x=parseFloat(v);if(isNaN(x))return '<span class="null">—</span>';return x.toLocaleString('es-CO',{maximumFractionDigits:2})+' m²';}
-function fmtMeses(v){if(nul(v))return '<span class="null">—</span>';const x=parseFloat(v);if(isNaN(x))return fmt(v);return x.toFixed(1)+' meses';}
 
 function icon(path){return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">${path}</svg>`;}
 

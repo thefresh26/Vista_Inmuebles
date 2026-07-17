@@ -17,12 +17,6 @@ live-server@^1.2.2          # Servidor local con hot-reload para desarrollo
 http-server@^14.1.1         # Servidor estático alternativo (producción local)
 
 # ------------------------------------------------------------
-# DEPENDENCIAS FRONTEND (cargadas vía CDN — no requieren npm)
-# ------------------------------------------------------------
-jszip@3.10.1                # Compresión ZIP/KMZ en el cliente
-                            # CDN: https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js
-
-# ------------------------------------------------------------
 # FUENTES WEB (Google Fonts — no requieren instalación)
 # ------------------------------------------------------------
 # Montserrat (weights: 400, 500, 600, 700, 800)

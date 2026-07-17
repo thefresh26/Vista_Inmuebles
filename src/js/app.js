@@ -22,9 +22,6 @@ function doLogin(){
     document.getElementById('login-overlay').style.display = 'none';
     document.getElementById('hero-eyebrow').textContent =
       user === 'broker2026' ? 'INTRANET BROKERS · 2026' : 'INTRANET COMERCIAL · 2026';
-    if(currentRole === 'broker'){
-      document.getElementById('admin-wrap').style.display = 'none';
-    }
   } else {
     err.style.display = 'block';
     document.getElementById('l-pass').value = '';
@@ -185,7 +182,7 @@ async function buscar(){
     res.style.display='block';
 
     const mapLink=r.georeferenciado
-      ?`<a class="map-link" href="${r.georeferenciado}" target="_blank">${icon('<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>')} Ver ubicación en mapa</a>`
+      ?`<a class="map-link" href="${r.georeferenciado.replace('www.google.com/maps','earth.google.com/web')}" target="_blank">${icon('<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>')} Ver en Google Earth</a>`
       :'<span class="null">Sin georreferenciación</span>';
 
     const dispBadge=String(r.disponibilidad||'').toUpperCase()==='DISPONIBLE'
@@ -264,71 +261,3 @@ async function buscar(){
   }
 }
 
-document.getElementById('admin-pw').addEventListener('input',function(){
-  document.getElementById('btn-kmz').style.display=this.value==='admin2026'?'inline-flex':'none';
-});
-
-function escXml(s){
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-async function downloadKMZ(){
-  const status=document.getElementById('kmz-status');
-  const btn=document.getElementById('btn-kmz');
-  status.style.display='inline';
-  status.textContent='⏳ Descargando inventario y viabilidades...';
-  btn.disabled=true;
-  try{
-    const headers={'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'};
-    const [resp,vResp]=await Promise.all([
-      fetch(SUPABASE_URL+'/rest/v1/inventario_SAE?georeferenciado=not.is.null&select=fmi,municipio,departamento,direccion,disponibilidad,clasificacion_activo,georeferenciado&limit=40000',{headers}),
-      fetch(SUPABASE_URL+'/rest/v1/inventario_Activos?select=fmi&limit=10000',{headers})
-    ]);
-    if(!resp.ok)throw new Error('HTTP '+resp.status);
-    if(!vResp.ok)throw new Error('HTTP viabilidad '+vResp.status);
-    const [data,vData]=await Promise.all([resp.json(),vResp.json()]);
-    const viabilidadSet=new Set(vData.map(v=>v.fmi));
-    console.log('FMIs viabilidad:',viabilidadSet.size);
-    status.textContent=`⚙ Generando KML (${data.length} inmuebles)...`;
-    const re=/@(-?\d+\.\d+),(-?\d+\.\d+)/;
-    const placemarks=data.map(r=>{
-      const m=r.georeferenciado&&r.georeferenciado.match(re);
-      if(!m)return'';
-      const lon=m[1],lat=m[2];
-      const viable=viabilidadSet.has(r.fmi)?'✓ Sí':'✕ No';
-      return`    <Placemark>
-      <name>${escXml(r.fmi)}</name>
-      <description><![CDATA[FMI: ${r.fmi||'—'}
-Municipio: ${r.municipio||'—'}
-Departamento: ${r.departamento||'—'}
-Dirección: ${r.direccion||'—'}
-Disponibilidad: ${r.disponibilidad||'—'}
-Clasificación: ${r.clasificacion_activo||'—'}
-Estado Viabilidad: ${viable}]]></description>
-      <Point><coordinates>${lon},${lat},0</coordinates></Point>
-    </Placemark>`;
-    }).filter(Boolean).join('\n');
-    const kml=`<?xml version="1.0" encoding="UTF-8"?>
-<kml xmlns="http://www.opengis.net/kml/2.2">
-  <Document>
-    <name>Inventario Activos por Colombia</name>
-${placemarks}
-  </Document>
-</kml>`;
-    status.textContent='⚙ Comprimiendo...';
-    const zip=new JSZip();
-    zip.file('doc.kml',kml);
-    const blob=await zip.generateAsync({type:'blob',compression:'DEFLATE',compressionOptions:{level:6}});
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(blob);
-    a.download='inventario_activos.kmz';
-    document.body.appendChild(a);a.click();document.body.removeChild(a);
-    URL.revokeObjectURL(a.href);
-    status.textContent=`✓ Descargado — ${data.length} puntos georeferenciados`;
-  }catch(e){
-    console.error('KMZ error:',e);
-    status.textContent='⚠ Error: '+e.message;
-  }finally{
-    btn.disabled=false;
-  }
-}

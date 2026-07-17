@@ -181,7 +181,7 @@ async function buscar(){
     res.style.display='block';
 
     const mapLink=r.georeferenciado
-      ?`<a class="map-link" href="${r.georeferenciado}" target="_blank">${icon('<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>')} Ver ubicación en mapa</a>`
+      ?`<a class="map-link" href="${r.georeferenciado.replace('www.google.com/maps','earth.google.com/web')}" target="_blank">${icon('<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>')} Ver en Google Earth</a>`
       :'<span class="null">Sin georreferenciación</span>';
 
     const dispBadge=String(r.disponibilidad||'').toUpperCase()==='DISPONIBLE'
